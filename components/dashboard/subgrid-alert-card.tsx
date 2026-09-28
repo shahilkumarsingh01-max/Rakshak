@@ -170,9 +170,11 @@ export function SubgridAlertCard() {
       </div>
 
       {/* Footer / Provenance */}
-      <div className="flex items-center justify-between pt-1 text-xs font-mono text-[#948E85]">
-        <span>Provenance: {evaluation?.provenance || "moes_cap_v1"}</span>
-        <span>Lat: {lat.toFixed(2)}° · Lon: {lon.toFixed(2)}°</span>
+      <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1 text-xs font-mono text-[#948E85] border-t border-white/[0.04]">
+        <span className="truncate max-w-[150px]" title={evaluation?.provenance || "moes_cap_v1"}>
+          Prov: {evaluation?.provenance || "moes_cap_v1"}
+        </span>
+        <span className="shrink-0 text-right">{lat.toFixed(2)}°N · {lon.toFixed(2)}°E</span>
       </div>
     </div>
   )

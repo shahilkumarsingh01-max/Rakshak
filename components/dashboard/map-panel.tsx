@@ -16,6 +16,10 @@ import {
   Globe,
   X,
   Route,
+  PanelLeftOpen,
+  PanelRightOpen,
+  Maximize2,
+  Minimize2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { MapSearchBar } from "@/src/components/MapSearchBar"
@@ -45,7 +49,20 @@ export function MapPanel() {
   const [showLegend, setShowLegend] = useState(false)
   const [layersOpen, setLayersOpen] = useState(false)
   const [advancedExpanded, setAdvancedExpanded] = useState(false)
-  const { activeLanguage, filterScope, setFilterScope, selectedRegion, flyToken, resetToIndiaView } = useDisaster()
+  const {
+    activeLanguage,
+    filterScope,
+    setFilterScope,
+    selectedRegion,
+    flyToken,
+    resetToIndiaView,
+    showLeftSidebar,
+    toggleLeftSidebar,
+    showRightPanel,
+    toggleRightPanel,
+    isMapFocusMode,
+    toggleMapFocusMode,
+  } = useDisaster()
 
   return (
     <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-white/[0.08] bg-[#1A1918]">
@@ -158,6 +175,35 @@ export function MapPanel() {
             </div>
           </div>
         )}
+
+        {/* Floating edge restore handles when panels are collapsed */}
+        {!showLeftSidebar && (
+          <div className="pointer-events-auto absolute left-3 top-14 z-[500] hidden lg:block animate-in fade-in slide-in-from-left-2 duration-200">
+            <button
+              type="button"
+              onClick={toggleLeftSidebar}
+              title={activeLanguage === "hi" ? "बायाँ पैनल दिखाएँ (अवलोकन)" : "Show Left Panel (Overview & GNN)"}
+              className="flex items-center gap-1.5 rounded-lg border border-white/[0.12] bg-[#211F1E]/95 px-2.5 py-1.5 text-xs font-medium text-[#ECEAE6] shadow-xl backdrop-blur hover:bg-[#2A2725] hover:border-cyan-400/50 transition-all active:scale-95"
+            >
+              <PanelLeftOpen className="size-3.5 text-cyan-400" />
+              <span className="text-xs font-mono">{activeLanguage === "hi" ? "अवलोकन" : "Overview"}</span>
+            </button>
+          </div>
+        )}
+
+        {!showRightPanel && (
+          <div className="pointer-events-auto absolute right-3 top-14 z-[500] hidden lg:block animate-in fade-in slide-in-from-right-2 duration-200">
+            <button
+              type="button"
+              onClick={toggleRightPanel}
+              title={activeLanguage === "hi" ? "दायाँ पैनल दिखाएँ (अलर्ट और स्लाइडर्स)" : "Show Right Panel (Alerts & Sliders)"}
+              className="flex items-center gap-1.5 rounded-lg border border-white/[0.12] bg-[#211F1E]/95 px-2.5 py-1.5 text-xs font-medium text-[#ECEAE6] shadow-xl backdrop-blur hover:bg-[#2A2725] hover:border-emerald-400/50 transition-all active:scale-95"
+            >
+              <PanelRightOpen className="size-3.5 text-emerald-400" />
+              <span className="text-xs font-mono">{activeLanguage === "hi" ? "अलर्ट / स्लाइडर्स" : "Alerts & Sliders"}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Unified Top Controls Bar */}
@@ -178,6 +224,33 @@ export function MapPanel() {
         {/* Right: Map Layers Popover & Quick Controls */}
         <div className="pointer-events-auto relative shrink-0">
           <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={toggleMapFocusMode}
+              title={
+                isMapFocusMode
+                  ? (activeLanguage === "hi" ? "मानचित्र फ़ोकस से बाहर निकलें (पैनल दिखाएँ)" : "Exit Map Focus (Restore panels)")
+                  : (activeLanguage === "hi" ? "मानचित्र फ़ोकस (साइड पैनल छिपाएँ)" : "Focus on Map (Hide sidebars)")
+              }
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg border px-2.5 sm:px-3 py-1.5 text-xs font-medium shadow-lg backdrop-blur transition-all active:scale-95",
+                isMapFocusMode
+                  ? "border-cyan-400 bg-cyan-950/80 text-cyan-300 ring-1 ring-cyan-400/40"
+                  : "border-white/[0.08] bg-[#211F1E] text-[#ECEAE6] hover:bg-[#2A2725]"
+              )}
+            >
+              {isMapFocusMode ? (
+                <>
+                  <Minimize2 className="size-3.5 text-cyan-300" />
+                  <span className="hidden sm:inline">{activeLanguage === "hi" ? "फ़ोकस हटाएँ" : "Exit Focus"}</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="size-3.5 text-cyan-400" />
+                  <span className="hidden sm:inline">{activeLanguage === "hi" ? "फ़ोकस मोड" : "Focus Map"}</span>
+                </>
+              )}
+            </button>
             <button
               type="button"
               onClick={() => setLayersOpen((v) => !v)}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CloudRain, Info, Wifi, WifiOff, Globe, Check, DatabaseBackup, X, Cpu, RotateCcw } from "lucide-react"
+import { CloudRain, Info, Wifi, WifiOff, Globe, Check, DatabaseBackup, X, Cpu, RotateCcw, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Maximize2, Minimize2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +43,12 @@ export function DashboardHeader() {
     offlineQueue,
     syncOfflineQueue,
     replayCycloneAmphan,
+    showLeftSidebar,
+    toggleLeftSidebar,
+    showRightPanel,
+    toggleRightPanel,
+    isMapFocusMode,
+    toggleMapFocusMode,
   } = useDisaster()
 
   const [backendHealth, setBackendHealth] = useState<HealthResponse | null>(null)
@@ -193,6 +199,55 @@ export function DashboardHeader() {
 
         {/* ── RIGHT: Controls ── */}
         <div className="flex shrink-0 items-center gap-2">
+
+          {/* Panel Visibility & Map Focus Controls (Desktop) */}
+          <div className="hidden lg:flex items-center rounded-lg border border-white/[0.08] bg-[#211F1E] p-0.5 shadow-xs">
+            <button
+              type="button"
+              onClick={toggleLeftSidebar}
+              title={showLeftSidebar ? (activeLanguage === "hi" ? "बायाँ पैनल छिपाएँ" : "Hide Left Sidebar") : (activeLanguage === "hi" ? "बायाँ पैनल दिखाएँ" : "Show Left Sidebar")}
+              className={cn(
+                "flex size-7 items-center justify-center rounded-md transition-all",
+                showLeftSidebar
+                  ? "bg-[#2A2725] text-cyan-300 shadow-2xs"
+                  : "text-[#948E85] hover:text-[#ECEAE6] hover:bg-[#2A2725]/50"
+              )}
+            >
+              {showLeftSidebar ? <PanelLeftClose className="size-3.5" /> : <PanelLeftOpen className="size-3.5" />}
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleMapFocusMode}
+              title={isMapFocusMode ? (activeLanguage === "hi" ? "फ़ोकस मोड से बाहर निकलें" : "Exit Full Map Focus") : (activeLanguage === "hi" ? "मानचित्र फ़ोकस मोड (दोनों पैनल छिपाएँ)" : "Focus on Map (Hide sidebars)")}
+              className={cn(
+                "flex h-7 items-center gap-1 px-2 rounded-md text-xs font-medium transition-all",
+                isMapFocusMode
+                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-xs"
+                  : "text-[#A8A29A] hover:text-[#ECEAE6] hover:bg-[#2A2725]/50"
+              )}
+            >
+              {isMapFocusMode ? <Minimize2 className="size-3 text-cyan-300" /> : <Maximize2 className="size-3" />}
+              <span className="hidden xl:inline text-xs font-mono">
+                {isMapFocusMode ? (activeLanguage === "hi" ? "फ़ोकस सक्रिय" : "Focused") : (activeLanguage === "hi" ? "मानचित्र फ़ोकस" : "Focus Map")}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleRightPanel}
+              title={showRightPanel ? (activeLanguage === "hi" ? "दायाँ पैनल छिपाएँ" : "Hide Right Panel") : (activeLanguage === "hi" ? "दायाँ पैनल दिखाएँ" : "Show Right Panel")}
+              className={cn(
+                "flex size-7 items-center justify-center rounded-md transition-all",
+                showRightPanel
+                  ? "bg-[#2A2725] text-emerald-300 shadow-2xs"
+                  : "text-[#948E85] hover:text-[#ECEAE6] hover:bg-[#2A2725]/50"
+              )}
+            >
+              {showRightPanel ? <PanelRightClose className="size-3.5" /> : <PanelRightOpen className="size-3.5" />}
+            </button>
+          </div>
+
 
           {/* About button */}
           <button

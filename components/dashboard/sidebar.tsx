@@ -14,6 +14,7 @@ import {
   Wind,
   Droplets,
   MountainSnow,
+  PanelLeftClose,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -47,6 +48,7 @@ export function DashboardSidebar() {
     setFilterScope,
     flyToken,
     resetToIndiaView,
+    toggleLeftSidebar,
   } = useDisaster()
 
   const [isAreaModalOpen, setIsAreaModalOpen] = useState(false)
@@ -118,14 +120,32 @@ export function DashboardSidebar() {
 
   return (
     <>
-      <aside className="flex h-full w-full flex-col gap-4 overflow-y-auto border-r border-white/[0.08] bg-[#1A1918] p-3.5 pb-4 text-[#ECEAE6] select-none">
+      <aside className="flex h-full w-full flex-col gap-3 overflow-y-auto border-r border-white/[0.08] bg-[#1A1918] p-2.5 pb-3 text-[#ECEAE6] select-none">
         
+        {/* Top Header & Collapse Button */}
+        <div className="flex items-center justify-between px-1 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="text-xs font-semibold tracking-wide uppercase text-[#ECEAE6]">
+              {activeLanguage === "hi" ? "कमांड ओवरव्यू" : "Synoptic Overview"}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={toggleLeftSidebar}
+            title={activeLanguage === "hi" ? "बायाँ पैनल छिपाएँ" : "Hide Left Sidebar"}
+            className="flex size-6 items-center justify-center rounded-md border border-white/[0.08] bg-[#211F1E] text-[#A8A29A] hover:text-[#ECEAE6] hover:bg-[#2A2725] transition-colors"
+          >
+            <PanelLeftClose className="size-3.5" />
+          </button>
+        </div>
+
         {/* Active Focus Area Card / National Command Hub */}
         <div className="shrink-0">
           {isNationalOverview ? (
             <Card className="group relative overflow-hidden border border-emerald-500/30 bg-[#211F1E] transition-all hover:border-emerald-500/60 shadow-lg">
               {/* Satellite / Earth Command Banner */}
-              <div className="relative h-28 w-full overflow-hidden bg-[#1A1918]">
+              <div className="relative h-24 w-full overflow-hidden bg-[#1A1918]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80"
@@ -145,7 +165,7 @@ export function DashboardSidebar() {
                     National GNN Tracking Command
                   </p>
                   <p className="truncate text-xs text-[#A8A29A] drop-shadow">
-                    MoES PS 26078 · GNN + Diffusion Pipeline
+                    MoES PS 26078 · GNN + Diffusion
                   </p>
                 </div>
               </div>

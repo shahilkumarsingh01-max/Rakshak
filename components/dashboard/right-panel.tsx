@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Gauge, Radio, Rows, Sparkles } from "lucide-react"
+import { Gauge, Radio, Rows, Sparkles, PanelRightClose } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { LiveFeed } from "@/components/dashboard/live-feed"
 import { RiskAssessmentCard } from "@/src/components/RiskAssessmentCard"
@@ -10,7 +10,7 @@ import { SubgridAlertCard } from "@/components/dashboard/subgrid-alert-card"
 import { useDisaster } from "@/src/context/DisasterContext"
 
 export function RightPanel() {
-  const { visibleIncidents, activeRightTab, setActiveRightTab, activeLanguage } = useDisaster()
+  const { visibleIncidents, activeRightTab, setActiveRightTab, activeLanguage, toggleRightPanel } = useDisaster()
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden border-t border-white/[0.08] lg:border-t-0 lg:border-l bg-[#1A1918] text-[#ECEAE6]">
@@ -49,26 +49,37 @@ export function RightPanel() {
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setActiveRightTab(activeRightTab === "split" ? "sliders" : "split")}
-          title={activeLanguage === "hi" ? "विभाजित दृश्य टॉगल करें" : "Toggle Split Stack View"}
-          className={cn(
-            "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium border transition-colors",
-            activeRightTab === "split"
-              ? "border-sky-500/40 bg-sky-500/15 text-sky-300"
-              : "border-white/[0.08] bg-[#211F1E] text-[#A8A29A] hover:text-[#ECEAE6]"
-          )}
-        >
-          <Rows className="size-3.5 text-sky-400" />
-          <span className="hidden sm:inline">
-            {activeLanguage === "hi" ? "विभाजित" : "Split"}
-          </span>
-        </button>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => setActiveRightTab(activeRightTab === "split" ? "sliders" : "split")}
+            title={activeLanguage === "hi" ? "विभाजित दृश्य टॉगल करें" : "Toggle Split Stack View"}
+            className={cn(
+              "flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium border transition-colors",
+              activeRightTab === "split"
+                ? "border-sky-500/40 bg-sky-500/15 text-sky-300"
+                : "border-white/[0.08] bg-[#211F1E] text-[#A8A29A] hover:text-[#ECEAE6]"
+            )}
+          >
+            <Rows className="size-3.5 text-sky-400" />
+            <span className="hidden sm:inline">
+              {activeLanguage === "hi" ? "विभाजित" : "Split"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleRightPanel}
+            title={activeLanguage === "hi" ? "दायाँ पैनल छिपाएँ" : "Hide Right Panel"}
+            className="flex size-7 items-center justify-center rounded-md border border-white/[0.08] bg-[#211F1E] text-[#A8A29A] hover:text-[#ECEAE6] hover:bg-[#2A2725] transition-colors"
+          >
+            <PanelRightClose className="size-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-4 pb-5 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-2.5 pb-4 space-y-3">
         {activeRightTab === "sliders" && (
           <div className="animate-in fade-in-50 duration-200 space-y-4">
             <SubgridAlertCard />

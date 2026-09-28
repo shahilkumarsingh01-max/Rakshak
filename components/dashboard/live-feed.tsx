@@ -182,64 +182,75 @@ export function LiveFeed() {
                     </div>
 
                     {/* Report Intel Content */}
-                    <div className="flex min-w-0 flex-1 flex-col justify-between gap-1">
-                      {/* Top Badges & Timing */}
-                      <div className="flex items-center justify-between gap-1.5">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <Badge
-                            variant={
+                    <div className="flex min-w-0 flex-1 flex-col justify-between gap-1 overflow-hidden">
+                      {/* Row 1: Severity Indicator & Timing (Immune to collision) */}
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-1.5 min-w-0 shrink-0">
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-mono font-medium border shrink-0",
                               report.severity === "Critical"
-                                ? "destructive"
+                                ? "border-red-500/50 bg-red-950/50 text-red-300"
                                 : report.severity === "Severe"
-                                  ? "secondary"
-                                  : "outline"
-                            }
-                            className="text-xs px-1.5 py-0 font-medium truncate"
+                                  ? "border-orange-500/50 bg-orange-950/50 text-orange-300"
+                                  : "border-amber-500/50 bg-amber-950/50 text-amber-300"
+                            )}
                           >
-                            {report.type}
-                          </Badge>
+                            <span
+                              className={cn(
+                                "size-1.5 rounded-full shrink-0",
+                                report.severity === "Critical"
+                                  ? "bg-red-500 animate-pulse"
+                                  : report.severity === "Severe"
+                                    ? "bg-orange-500"
+                                    : "bg-amber-500"
+                              )}
+                            />
+                            <span>{report.severity}</span>
+                          </span>
+
                           {isFocused && (
-                            <span className="shrink-0 rounded bg-emerald-500 px-1 py-0 font-mono text-xs font-semibold text-black animate-pulse">
-                              Locked
+                            <span className="shrink-0 rounded bg-emerald-500 px-1 py-0.2 font-mono text-[9px] font-bold text-black animate-pulse">
+                              LOCKED
                             </span>
                           )}
                         </div>
 
-                        <span className="flex shrink-0 items-center gap-1 text-xs text-[#A8A29A] font-mono">
-                          <Clock className="size-3 text-[#A8A29A]" />
-                          {now ? relativeTime(report.timestamp, activeLanguage) : "--"}
+                        <span className="flex shrink-0 items-center gap-1 text-[11px] text-[#A8A29A] font-mono ml-auto whitespace-nowrap">
+                          <Clock className="size-3 text-[#A8A29A] shrink-0" />
+                          <span>{now ? relativeTime(report.timestamp, activeLanguage) : "--"}</span>
                         </span>
                       </div>
 
-                      {/* Location Title */}
-                      <p className="text-xs font-semibold text-[#ECEAE6] group-hover:text-emerald-300 transition-colors line-clamp-1 leading-snug">
-                        {report.locationLabel}
+                      {/* Row 2: Incident Title (Dedicated Line - Full Width, No Truncation Conflict) */}
+                      <p
+                        className="text-xs font-semibold text-[#ECEAE6] group-hover:text-emerald-300 transition-colors truncate leading-snug"
+                        title={report.type}
+                      >
+                        {report.type}
                       </p>
 
-                      {/* Geotag & Interactive Hint */}
-                      <div className="flex items-center justify-between gap-2 text-xs text-[#A8A29A]">
-                        <span className="flex items-center gap-1 font-mono text-[#A8A29A] text-xs truncate">
-                          <MapPin className="size-3 shrink-0 text-emerald-400" />
-                          <span className="truncate">{formatCoord(report.lat, report.lon)}</span>
-                        </span>
-
-                        <span className="shrink-0 flex items-center gap-0.5 text-xs font-medium text-emerald-400 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
-                          Inspect SOP ↗
+                      {/* Row 3: Location & Coordinates */}
+                      <div className="flex items-center gap-1 text-[11px] text-[#A8A29A] min-w-0">
+                        <MapPin className="size-3 shrink-0 text-emerald-400" />
+                        <span className="truncate" title={report.locationLabel}>
+                          {report.locationLabel}
                         </span>
                       </div>
 
-                      {/* Reporter & Verification Strip */}
-                      <div className="flex items-center justify-between gap-2 text-xs text-[#948E85] border-t border-white/[0.08] pt-1 mt-0.5">
-                        <span className="truncate">{report.reporter}</span>
+                      {/* Row 4: Reporter & SOP Verification Action */}
+                      <div className="flex items-center justify-between gap-1.5 text-[11px] text-[#948E85] border-t border-white/[0.08] pt-1 mt-0.5 min-w-0">
+                        <span className="truncate min-w-0 flex-1 text-[10px] text-[#8C867E]" title={report.reporter}>
+                          {report.reporter}
+                        </span>
                         {queued ? (
-                          <span className="flex items-center gap-1 text-sky-300 shrink-0 font-medium">
+                          <span className="flex items-center gap-1 text-sky-300 shrink-0 font-medium ml-auto">
                             <Database className="size-3" />
                             {t(activeLanguage, "queued")}
                           </span>
                         ) : (
-                          <span className="shrink-0 text-emerald-400/90 font-medium flex items-center gap-1">
-                            <CheckCircle2 className="size-3 text-emerald-400" />
-                            {localize(SEVERITY_LABEL[report.severity], activeLanguage)}
+                          <span className="shrink-0 flex items-center gap-0.5 text-[11px] font-medium text-emerald-400 opacity-90 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ml-auto">
+                            Inspect SOP ↗
                           </span>
                         )}
                       </div>

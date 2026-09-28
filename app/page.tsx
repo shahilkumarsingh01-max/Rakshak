@@ -104,23 +104,43 @@ function MobileLayout() {
 }
 
 function DesktopLayout() {
+  const { showLeftSidebar, showRightPanel } = useDisaster()
+
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#1A1918] text-[#ECEAE6]">
       <DashboardHeader />
-      <div className="grid flex-1 min-h-0 grid-cols-1 overflow-hidden lg:grid-cols-[305px_1fr_395px] xl:grid-cols-[320px_1fr_425px]">
+      <div className="relative flex flex-1 min-h-0 w-full overflow-hidden">
         {/* Left Sidebar */}
-        <div className="hidden lg:flex lg:h-full lg:min-h-0 lg:flex-col lg:overflow-hidden">
-          <DashboardSidebar />
+        <div
+          className={cn(
+            "hidden lg:flex flex-col h-full shrink-0 transition-all duration-300 ease-in-out overflow-hidden border-r border-white/[0.08]",
+            showLeftSidebar
+              ? "w-[255px] xl:w-[275px] opacity-100"
+              : "w-0 opacity-0 border-r-0 pointer-events-none"
+          )}
+        >
+          <div className="w-[255px] xl:w-[275px] h-full flex flex-col min-h-0">
+            <DashboardSidebar />
+          </div>
         </div>
 
         {/* Center Main Map Area */}
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-3.5">
+        <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden p-2 sm:p-2.5 transition-all duration-300">
           <MapPanel />
         </main>
 
         {/* Right Panel */}
-        <div className="flex h-full min-h-0 flex-col overflow-hidden">
-          <RightPanel />
+        <div
+          className={cn(
+            "hidden lg:flex flex-col h-full shrink-0 transition-all duration-300 ease-in-out overflow-hidden border-l border-white/[0.08]",
+            showRightPanel
+              ? "w-[310px] xl:w-[335px] opacity-100"
+              : "w-0 opacity-0 border-l-0 pointer-events-none"
+          )}
+        >
+          <div className="w-[310px] xl:w-[335px] h-full flex flex-col min-h-0">
+            <RightPanel />
+          </div>
         </div>
       </div>
     </div>

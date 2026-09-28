@@ -40,6 +40,12 @@ export function SwipeComparator() {
   const anomalyId = getAnomalyIdForRegion(selectedRegion.id, selectedRegion.name)
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash === "#swipe") {
+      setIsSwipeComparatorActive(true)
+    }
+  }, [setIsSwipeComparatorActive])
+
+  useEffect(() => {
     if (!isSwipeComparatorActive) return
     const controller = new AbortController()
     setLoading(true)
@@ -222,16 +228,16 @@ export function SwipeComparator() {
             <div className="absolute right-1/4 top-1/2 -translate-y-1/2 size-28 rounded-full bg-rose-500/25 blur-xl pointer-events-none animate-pulse" />
             <div className="absolute right-1/4 top-1/2 -translate-y-1/2 size-12 rounded-full bg-amber-400/40 blur-md pointer-events-none" />
 
-            <div className="relative z-10 flex items-center justify-between">
-              <span className="rounded bg-purple-950/90 border border-purple-500/50 px-2 py-0.5 font-mono text-xs font-medium text-purple-200 shadow">
+            <div className="relative z-10 flex flex-col items-end gap-1 ml-auto text-right">
+              <span className="rounded bg-purple-950/95 border border-purple-500/50 px-2 py-0.5 font-mono text-xs font-medium text-purple-200 shadow whitespace-nowrap">
                 5km DDPM AI resolved
               </span>
-              <span className="font-mono text-xs font-semibold text-emerald-400">
+              <span className="font-mono text-xs font-semibold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded shadow whitespace-nowrap">
                 +{resolved.amplitude_recovery_pct}% peak amplitude
               </span>
             </div>
 
-            <div className="relative z-10 space-y-1 text-right">
+            <div className="relative z-10 space-y-1 text-right max-w-[200px] sm:max-w-xs ml-auto">
               <div className="font-mono text-2xl font-semibold text-[#ECEAE6] drop-shadow-[0_2px_8px_rgba(16,185,129,0.5)]">
                 {resolved.precip_peak_mm_hr} <span className="text-xs font-normal text-[#A8A29A]">mm/hr</span>
               </div>
@@ -248,7 +254,7 @@ export function SwipeComparator() {
 
           {/* OVER LAYER (Left side): 12km NWP Coarse */}
           <div
-            className="absolute inset-0 bg-gradient-to-br from-sky-950/90 via-[#1A1918] to-blue-950/80 flex flex-col justify-between p-3.5 border-r border-white/60"
+            className="absolute inset-0 bg-gradient-to-br from-[#081829] via-[#101924] to-[#081829] flex flex-col justify-between p-3.5 border-r border-white/60 shadow-[4px_0_16px_rgba(0,0,0,0.6)]"
             style={{
               clipPath: `inset(0 ${100 - swipePosition}% 0 0)`,
             }}
@@ -265,16 +271,16 @@ export function SwipeComparator() {
             {/* Diffuse smoothed blob */}
             <div className="absolute left-1/4 top-1/2 -translate-y-1/2 size-36 rounded-full bg-sky-500/15 blur-2xl pointer-events-none" />
 
-            <div className="relative z-10 flex items-center justify-between">
-              <span className="rounded bg-sky-950/90 border border-sky-500/50 px-2 py-0.5 font-mono text-xs font-medium text-sky-200 shadow">
+            <div className="relative z-10 flex flex-col items-start gap-1 mr-auto text-left">
+              <span className="rounded bg-sky-950/95 border border-sky-500/50 px-2 py-0.5 font-mono text-xs font-medium text-sky-200 shadow whitespace-nowrap">
                 12km coarse NWP
               </span>
-              <span className="font-mono text-xs text-[#A8A29A]">
-                144 km² spatial average
+              <span className="font-mono text-[10px] text-sky-300/80 bg-sky-950/80 border border-sky-500/30 px-1.5 py-0.5 rounded shadow whitespace-nowrap">
+                144 km² grid avg
               </span>
             </div>
 
-            <div className="relative z-10 space-y-1 text-left">
+            <div className="relative z-10 space-y-1 text-left max-w-[200px] sm:max-w-xs">
               <div className="font-mono text-2xl font-semibold text-[#ECEAE6]">
                 {coarse.precip_rate_mm_hr} <span className="text-xs font-normal text-[#A8A29A]">mm/hr</span>
               </div>

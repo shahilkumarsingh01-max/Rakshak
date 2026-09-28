@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import {
   X,
   Clock,
@@ -130,6 +131,11 @@ export function IncidentDetailsModal({ incident, onClose }: IncidentDetailsModal
   const [copied, setCopied] = useState(false)
   const [aiBrief, setAiBrief] = useState<string | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // ESC key listener
   useEffect(() => {
@@ -141,7 +147,7 @@ export function IncidentDetailsModal({ incident, onClose }: IncidentDetailsModal
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [incident, onClose])
 
-  if (!incident) return null
+  if (!incident || !mounted) return null
 
   const physics = getHazardPhysics(incident.type)
   const isCritical = incident.severity === "Critical"
@@ -227,7 +233,7 @@ export function IncidentDetailsModal({ incident, onClose }: IncidentDetailsModal
     }
   }
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-in fade-in duration-150"
       onClick={onClose}
@@ -271,16 +277,17 @@ export function IncidentDetailsModal({ incident, onClose }: IncidentDetailsModal
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
             {/* Top Badges */}
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+            <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 min-w-0">
               <Badge
                 variant={isCritical ? "destructive" : isSevere ? "secondary" : "outline"}
-                className="text-xs font-semibold px-2.5 py-1 shadow-md"
+                className="text-xs font-semibold px-2.5 py-1 shadow-md truncate max-w-[70%]"
+                title={incident.type}
               >
-                {incident.type}
+                <span className="truncate">{incident.type}</span>
               </Badge>
-              <Badge variant="outline" className="border-white/[0.12] bg-black/70 text-[#ECEAE6] font-mono text-xs">
-                <Clock className="size-3 mr-1" />
-                {relativeTime(incident.timestamp, activeLanguage)}
+              <Badge variant="outline" className="border-white/[0.12] bg-black/70 text-[#ECEAE6] font-mono text-xs shrink-0 ml-auto whitespace-nowrap">
+                <Clock className="size-3 mr-1 shrink-0" />
+                <span>{relativeTime(incident.timestamp, activeLanguage)}</span>
               </Badge>
             </div>
 
@@ -465,6 +472,7 @@ export function IncidentDetailsModal({ incident, onClose }: IncidentDetailsModal
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

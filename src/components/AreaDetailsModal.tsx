@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import {
   MapPin,
   MountainSnow,
@@ -42,6 +43,11 @@ export function AreaDetailsModal({ open, onOpenChange }: AreaDetailsModalProps) 
   } = useDisaster()
 
   const [activeTab, setActiveTab] = useState<"overview" | "shelters" | "emergency">("overview")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Handle ESC key press
   useEffect(() => {
@@ -53,7 +59,7 @@ export function AreaDetailsModal({ open, onOpenChange }: AreaDetailsModalProps) 
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [open, onOpenChange])
 
-  if (!open) return null
+  if (!open || !mounted) return null
 
   const lat = gpsOverride?.lat ?? selectedRegion.coords[0]
   const lon = gpsOverride?.lon ?? selectedRegion.coords[1]
@@ -95,7 +101,7 @@ export function AreaDetailsModal({ open, onOpenChange }: AreaDetailsModalProps) 
     { agency: "National Emergency Response Support", phone: "Direct Dial 112", toll: "112", role: "Police · Fire · Medical Dispatch" },
   ]
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
       {/* Click outside to close */}
       <div className="fixed inset-0" onClick={() => onOpenChange(false)} />
@@ -400,6 +406,7 @@ export function AreaDetailsModal({ open, onOpenChange }: AreaDetailsModalProps) 
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

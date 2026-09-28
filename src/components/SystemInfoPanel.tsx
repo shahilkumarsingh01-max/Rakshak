@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import {
   X,
   ChevronRight,
@@ -70,12 +71,17 @@ const TECH_STACK = [
 
 export function SystemInfoPanel({ open, onClose }: SystemInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<"about" | "impact" | "diff" | "tech">("about")
+  const [mounted, setMounted] = useState(false)
 
-  if (!open) return null
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  return (
+  if (!open || !mounted) return null
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9000] flex bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+      className="fixed inset-0 z-[9999] flex bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
@@ -341,6 +347,7 @@ export function SystemInfoPanel({ open, onClose }: SystemInfoPanelProps) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

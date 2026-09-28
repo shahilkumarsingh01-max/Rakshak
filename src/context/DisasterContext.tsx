@@ -109,6 +109,15 @@ export interface DisasterStore {
   swipePosition: number
   setSwipePosition: (pos: number) => void
   replayCycloneAmphan: () => void
+  // Focus Map Mode & Collapsible Panels
+  showLeftSidebar: boolean
+  setShowLeftSidebar: (show: boolean | ((prev: boolean) => boolean)) => void
+  toggleLeftSidebar: () => void
+  showRightPanel: boolean
+  setShowRightPanel: (show: boolean | ((prev: boolean) => boolean)) => void
+  toggleRightPanel: () => void
+  isMapFocusMode: boolean
+  toggleMapFocusMode: () => void
 }
 
 const DisasterContext = createContext<DisasterStore | null>(null)
@@ -136,6 +145,39 @@ export function DisasterProvider({ children }: { children: ReactNode }) {
   const [ensemblePercentile, setEnsemblePercentile] = useState<"p10" | "p50" | "p90">("p50")
   const [isSwipeComparatorActive, setIsSwipeComparatorActive] = useState(false)
   const [swipePosition, setSwipePosition] = useState(50) // percentage 0 to 100
+
+  // Focus Map & Collapsible Panels
+  const [showLeftSidebar, setShowLeftSidebar] = useState(true)
+  const [showRightPanel, setShowRightPanel] = useState(true)
+
+  const isMapFocusMode = !showLeftSidebar && !showRightPanel
+
+  const toggleLeftSidebar = useCallback(() => {
+    setShowLeftSidebar((prev) => !prev)
+    setTimeout(() => {
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("resize"))
+    }, 320)
+  }, [])
+
+  const toggleRightPanel = useCallback(() => {
+    setShowRightPanel((prev) => !prev)
+    setTimeout(() => {
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("resize"))
+    }, 320)
+  }, [])
+
+  const toggleMapFocusMode = useCallback(() => {
+    if (!showLeftSidebar && !showRightPanel) {
+      setShowLeftSidebar(true)
+      setShowRightPanel(true)
+    } else {
+      setShowLeftSidebar(false)
+      setShowRightPanel(false)
+    }
+    setTimeout(() => {
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("resize"))
+    }, 320)
+  }, [showLeftSidebar, showRightPanel])
 
   const offlineQueueRef = useRef<IncidentReport[]>([])
   offlineQueueRef.current = offlineQueue
@@ -642,6 +684,14 @@ export function DisasterProvider({ children }: { children: ReactNode }) {
       swipePosition,
       setSwipePosition,
       replayCycloneAmphan,
+      showLeftSidebar,
+      setShowLeftSidebar,
+      toggleLeftSidebar,
+      showRightPanel,
+      setShowRightPanel,
+      toggleRightPanel,
+      isMapFocusMode,
+      toggleMapFocusMode,
     }),
     [
       selectedRegion,
@@ -682,6 +732,12 @@ export function DisasterProvider({ children }: { children: ReactNode }) {
       isSwipeComparatorActive,
       swipePosition,
       replayCycloneAmphan,
+      showLeftSidebar,
+      toggleLeftSidebar,
+      showRightPanel,
+      toggleRightPanel,
+      isMapFocusMode,
+      toggleMapFocusMode,
     ],
   )
 

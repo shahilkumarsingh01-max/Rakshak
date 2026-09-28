@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { AlertTriangle, Camera, Crosshair, Loader2, Radio, Upload, WifiOff, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +39,14 @@ export function FieldIncidentModal() {
   const [roadName, setRoadName] = useState("NH-6 KM 42")
   const [submitting, setSubmitting] = useState(false)
   const [queuedBanner, setQueuedBanner] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    if (typeof window !== "undefined" && window.location.hash === "#log-incident") {
+      setOpen(true)
+    }
+  }, [])
 
   useEffect(() => {
     if (!open) return
@@ -131,10 +140,14 @@ const DEFAULT_INCIDENT_PHOTOS: Record<IncidentType, string> = {
         </span>
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-[800] flex justify-end bg-black/50">
-          <button type="button" className="h-full flex-1 cursor-default" aria-label="Close drawer" onClick={() => setOpen(false)} />
-          <aside className="flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-zinc-800 bg-zinc-950 p-5 shadow-2xl">
+      {open && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div
+            className="fixed inset-0 cursor-default bg-black/40"
+            aria-label="Close drawer"
+            onClick={() => setOpen(false)}
+          />
+          <aside className="relative z-10 flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-white/[0.08] bg-[#1A1918] p-5 shadow-2xl text-[#ECEAE6] animate-in slide-in-from-right duration-300">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
                 <h2 className="flex items-center gap-2 text-sm font-semibold">
@@ -285,7 +298,8 @@ const DEFAULT_INCIDENT_PHOTOS: Record<IncidentType, string> = {
               {isOfflineMode ? t(activeLanguage, "queueInstead") : t(activeLanguage, "broadcast")}
             </Button>
           </aside>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )

@@ -421,11 +421,16 @@ export function RiskMap({
         .leaflet-popup-tip { background: #09090b; }
         .leaflet-container a.leaflet-popup-close-button { color: #a1a1aa; }
         .leaflet-control-attribution {
-          background: rgba(9,9,11,0.65) !important;
+          background: rgba(9,9,11,0.5) !important;
           color: #71717a !important;
           font-size: 9px !important;
           padding: 1px 6px !important;
           border-radius: 4px 0 0 0;
+          opacity: 0.35;
+          transition: opacity 0.2s ease-in-out;
+        }
+        .leaflet-control-attribution:hover {
+          opacity: 0.9;
         }
         .leaflet-control-attribution a { color: #a1a1aa !important; }
       `}</style>
@@ -954,7 +959,7 @@ function IncidentMarker({
       <Popup>
         <div className="min-w-[210px] text-xs p-1 space-y-1.5">
           <div className="font-serif font-semibold text-sm text-zinc-100">{incident.type}</div>
-          <div className="text-zinc-300 font-medium">${incident.locationLabel}</div>
+          <div className="text-zinc-300 font-medium">{incident.locationLabel}</div>
           <div className="text-zinc-400 font-mono text-xs">{formatCoord(incident.lat, incident.lon)}</div>
           <div className="flex items-center justify-between pt-1 border-t border-zinc-800">
             <span className={queued ? "text-sky-300 font-medium text-xs" : "text-rose-400 font-medium text-xs"}>

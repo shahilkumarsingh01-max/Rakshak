@@ -48,8 +48,8 @@ export function AIPipelineStatus() {
             <Cpu className="size-3.5 text-indigo-300" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#ECEAE6] truncate">Two-stage hybrid AI pipeline</p>
-            <p className="text-xs text-[#A8A29A] font-mono truncate">GNN track → diffusion downscale · PS 26078</p>
+            <p className="text-xs font-semibold text-[#ECEAE6] truncate">Hybrid AI Pipeline</p>
+            <p className="text-[11px] text-[#A8A29A] font-mono truncate">GNN + Diffusion · PS 26078</p>
           </div>
         </div>
 
